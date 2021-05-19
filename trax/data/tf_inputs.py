@@ -228,7 +228,7 @@ def _train_and_eval_dataset(dataset_name,
   train_split = tfds.Split.TRAIN if dataset_name != 'c4/multilingual' else 'en'
   train_examples = info.splits[train_split].num_examples
   eval_holdout_examples = int(train_examples * eval_holdout_size)
-  if eval_holdout_examples > 0 or subsplit is not None:
+  if eval_holdout_examples > 0 and subsplit is not None:
     n_train = train_examples - eval_holdout_examples
     train_start = int(n_train * subsplit[0])
     train_end = int(n_train * subsplit[1])
@@ -237,7 +237,7 @@ def _train_and_eval_dataset(dataset_name,
                        'n_train %d subsplit %s' % (n_train, subsplit))
     train_split = f'{train_split}[{train_start}:{train_end}]'
 
-  if eval_holdout_examples > 0:
+  if eval_holdout_examples > 0 and subsplit is None:
     eval_split = f'{train_split}[{eval_holdout_examples}:]'
   elif dataset_name == 'glue/mnli':
     eval_split = (
